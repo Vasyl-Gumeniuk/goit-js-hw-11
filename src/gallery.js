@@ -11,12 +11,13 @@ const refs = {
     formInputEl: document.querySelector('input'),
     submitFormBtnEl: document.querySelector('.form-btn'),
     loadMoreBtnEl: document.querySelector('.load-more'),
-
 }
+
 
 let page = 2;
 let limit = 40;
 const totalPages = 500 / limit;
+
 
 Notiflix.Notify.init({
   position: 'right-top',
@@ -60,7 +61,7 @@ function countryRequest(e) {
                 refs.loadMoreBtnEl.classList.remove('is-hidden');
                 addMarkupItems(countries.hits);
             })
-            .catch(error => console.log(error)) ;
+            .catch(error => console.log(error));
     }
     e.currentTarget.reset();
 };
