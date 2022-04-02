@@ -25,13 +25,13 @@ Notiflix.Notify.init({
 
 const lightbox = new SimpleLightbox('.gallery a', { captionsData: `alt`, captionDelay: 250 });
 
-refs.form.addEventListener('submit', countryRequest);
+refs.form.addEventListener('submit', pictureRequest);
 refs.loadMoreBtnEl.addEventListener('click', loadMoreImgs);
 let name = '';
 
 
 
-function countryRequest(e) {
+function pictureRequest(e) {
     e.preventDefault();
     const {
         elements: { searchQuery }
