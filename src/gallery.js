@@ -1,9 +1,7 @@
 import Notiflix from "notiflix";
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
-import { fetchCountries } from './js/fetchImg';
-
+import { fetchImages } from './js/fetchImg';
 
 const refs = {
     form: document.querySelector('#search-form'),
@@ -25,6 +23,7 @@ Notiflix.Notify.init({
   fontSize: '20px',
 });
 
+const lightbox = new SimpleLightbox('.gallery a', { captionsData: `alt`, captionDelay: 250 });
 
 refs.form.addEventListener('submit', countryRequest);
 refs.loadMoreBtnEl.addEventListener('click', loadMoreImgs);
@@ -47,19 +46,19 @@ function countryRequest(e) {
         Notiflix.Notify.warning('Please enter request.');
         return
     }
-    onCoutriesFetch(name);
+    onImagesFetch(name);
 
-    function onCoutriesFetch(name) {
-        fetchCountries(name)
-            .then(countries => {
-                console.log(countries);
-                if (countries.total === 0) {
+    function onImagesFetch(name) {
+        fetchImages(name)
+            .then(pictures => {
+                console.log(pictures);
+                if (pictures.total === 0) {
                     refs.loadMoreBtnEl.classList.add('is-hidden');
                     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
                     return;
                 }
                 refs.loadMoreBtnEl.classList.remove('is-hidden');
-                addMarkupItems(countries.hits);
+                addMarkupItems(pictures.hits);
             })
             .catch(error => console.log(error));
     }
@@ -85,8 +84,8 @@ function loadMoreImgs() {
         }
         return response.json();
         })
-        .then(countries => {
-            addMarkupItems(countries.hits);
+        .then(pictures => {
+            addMarkupItems(pictures.hits);
              page += 1;
         });
 }
@@ -96,7 +95,7 @@ function addMarkupItems(images) {
             const { webformatURL, largeImageURL, tags, likes, views, comments, downloads } = img;
             return refs.galleryMarkupEl.insertAdjacentHTML('beforeend',
                 `<div class="photo-card">
-                        <a class="img-link" href=${largeImageURL}>
+                        <a class="img-link" href="${largeImageURL}">
                             <img class = "gallery-image" src="${webformatURL}" data-source=${largeImageURL} alt="${tags}" loading="lazy" />
                         </a>
                         <div class="info">
@@ -118,12 +117,10 @@ function addMarkupItems(images) {
                 `)
         })
         .join('');
+    lightbox.refresh();
 };
 
 
 function clearInput() {
   refs.galleryMarkupEl.innerHTML = '';
 }
-
-
-const lightbox = new SimpleLightbox('.gallery .photo-card a', { captionsData: `alt`, captionDelay: 250 });
